@@ -3,11 +3,8 @@
 ## Project Title: The Future of Service-Based Scheduling
 
 **Name**: Abdulsemiu Kusimo
-
 **AltSchool ID**: ALT/SOE/024/2392
-
 **School**: AltSchool Africa Tinyuka
-
 **Track**: Cloud Engineering
 
 ---
@@ -32,34 +29,133 @@ This project demonstrates the provisioning of a cloud-based Ubuntu server, confi
 
 ### Steps:
 
-* **Cloud Provider**: AWS EC2
-* **Instance Type**: t2.micro (Free Tier)
-* **OS**: Ubuntu 22.04 LTS
-* **Security Group Rules**:
+**Choose a Cloud Provider or Virtualization Platform:**
+Use AWS, GCP, Azure, or a virtualization tool like VirtualBox. 
 
-  * Port 22 (SSH)
-  * Port 80 (HTTP)
-  * Port 443 (HTTPS)
+I chose **AWS**.
 
-### SSH Access:
+**Launch an Instance:**
 
+* Log in to the AWS Management Console.
+* Navigate to EC2 Dashboard and click **Launch Instance**.
+* Choose an Amazon Machine Image (AMI): Select **Ubuntu 22.04 LTS**.
+* Choose an instance type: Select **t2.micro** (Free Tier eligible).
+
+**Configure Instance Details:**
+
+* Leave the default VPC and subnet settings.
+* Enable **Auto-assign Public IP**.
+* Add storage: Keep the default 8GB or customize as required.
+
+**Configure Security Group:**
+
+* Allow HTTP (port 80) and SSH (port 22).
+
+**Launch the Instance:**
+
+* Download the private key file (e.g., `aws_key.pem`).
+
+**Connect to the Instance:**
+Open the terminal and added the `aws_key.pm` file to the `~/.ssh` directory to the directory:
+
+I change the permission of the file using
 ```bash
 chmod 400 aws_key.pem
-ssh -i aws_key.pem ubuntu@13.60.40.74
-```
 
+```
+Then I logged into the server using
+ 
+```
+ssh -i ~/.ssh/aws_key.pem ubuntu@13.60.40.74
+
+```
 ---
 
 ## 2. Web Server Setup
 
-### Commands:
+### Install and Configure Nginx
+
+1. Update the Server:
+
+*Run the following commands:
 
 ```bash
+
 sudo apt update && sudo apt upgrade -y
-sudo apt install nginx -y
+
 ```
 
-### Reverse Proxy to Node.js App:
+2. Install Nginx web server 
+
+
+```bash
+sudo apt install nginx -y
+
+```
+
+### Confirm Nginx is Running
+
+```bash
+systemctl status nginx
+```
+
+Visit `http://13.60.40.74` in the browser.
+
+### Deploy a Static HTML Page
+
+To deploy a static HTML landing page:
+
+1. **Create Directory Structure**:
+
+   ```bash
+   sudo mkdir -p /var/www/kusimoclouds.live/html
+   sudo chown -R $USER:$USER /var/www/kusimoclouds.live/html
+   sudo chmod -R 755 /var/www/kusimoclouds.live
+   ```
+
+2. **Add HTML File**:
+
+   ```bash
+   nano /var/www/kusimoclouds.live/html/index.html
+   ```
+3. **Restart Nginx**:
+
+   ```bash
+   sudo nginx -t
+   sudo systemctl restart nginx
+   ```
+
+### Create Server Block
+
+```bash
+sudo mkdir -p /var/www/kusimoclouds.live/html
+sudo chown -R $USER:$USER /var/www/kusimoclouds.live/html
+sudo chmod -R 755 /var/www/kusimoclouds.live
+```
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    root /var/www/kusimoclouds.live/html;
+    index index.html index.htm;
+    server_name kusimoclouds.live www.kusimoclouds.live;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+```
+
+Enable site:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/kusimoclouds.live /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+
+###  How to Reverse Proxy to Node.js App:
 
 **Config File:** `/etc/nginx/sites-available/node_app.conf`
 
@@ -86,26 +182,6 @@ sudo ln -s /etc/nginx/sites-available/node_app.conf /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
-
----
-
-## 3. Dynamic Landing Page
-
-**Project Title**: The Future of Service-Based Scheduling
-
-### Pitch:
-
-DropSlot empowers local service providers with smart, AI-backed booking pages. Whether you're a tutor, barber, or tailor, DropSlot makes scheduling seamless and efficient for your clients.
-
-### Professional Bio:
-
-I’m a backend engineer and cloud enthusiast with experience in Node.js, Express, MongoDB, and AWS. I’ve worked on several portfolio and real-world projects involving server deployment, reverse proxies, and CI/CD workflows.
-
-### Frontend:
-
-* Node.js with Express
-* TailwindCSS for styling
-* Basic animations for interactivity
 
 ---
 
@@ -136,14 +212,18 @@ sudo certbot renew --dry-run
 
 ## Screenshots
 
-![Landing Page Screenshot] ![My Screenshot](screenshots/landing_page.png)
+![Landing Page Screenshot](screenshot.png)  
+
+screenshots/landing_page.png
 
 ---
 
 ## Contact
 
-**Email**: [abdulsemiu.kusimo@gmail.com](mailto:abdulsemiu.kusimo@gmail.com)
-**LinkedIn**: [linkedin.com/in/abdulsemiu-kusimo](https://linkedin.com/in/abdulsemiu-kusimo)
+**Email**:
+[abdulsemiu.kusimo@gmail.com](mailto:abdulsemiu.kusimo@gmail.com)
+**LinkedIn**:
+[linkedin.com/in/abdulsemiu-kusimo](https://linkedin.com/in/abdulsemiu-kusimo)
 
 ---
 
