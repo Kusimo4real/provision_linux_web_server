@@ -215,9 +215,8 @@ sudo certbot renew --dry-run
 
 ## Screenshots
 
-![Landing Page Screenshot](screenshot.png)  
+![Landing Page Screenshot](screenshots/landing_page.png)  
 
-screenshots/landing_page.png
 
 ---
 
